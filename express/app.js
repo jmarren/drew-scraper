@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 
 // Set up CORS
-const whitelist = ['http://localhost:3000', 'http://localhost:3001'];
+const whitelist = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3011'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
