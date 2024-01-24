@@ -7,19 +7,26 @@ const { Parser } = require("json2csv");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const stealthRouter = require("./routes/stealth");
+const PORT = process.env.PORT || 3014;
 
 const app = express();
+
 
 app.use(express.json({ limit: "50mb" }));
 
 // Set up CORS
-const whitelist = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3011'];
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://droopy.mechanicalturk.one",
+  "http://localhost:3011",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   optionsSuccessStatus: 200,
@@ -218,6 +225,6 @@ app.get("/puppet-test", async (req, res) => {
 
 app.use("/stealth", stealthRouter);
 
-app.listen(3010, () => {
-  console.log("Server is running on port 3000");
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
