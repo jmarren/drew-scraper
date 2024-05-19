@@ -6,25 +6,32 @@ export default function Home() {
   const [url, setUrl] = useState('');
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
-    fetch('http://localhost:3010/stealth/scrape', {
+
+    fetch('http://localhost:3014/stealth/scrape', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ urlLink: url }),
     })
-      .then((res) => res.blob())
-      .then((blob) => {
+      .then(async (res) => {
+        // Extract filename from Content-Disposition header
+        let filename = 'units.csv'; // Default filename
+
+        // Convert response to blob and return it with the filename
+        return res.blob().then(blob => ({ blob, filename }));
+      })
+      .then(({ blob, filename }) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'units.csv';
+        a.download = filename;
         a.click();
       })
       .catch((error) => console.error('Error:', error));
-  };
+  }
 
+  // Return statement should be here
   return (
     <form onSubmit={handleSubmit}>
       <input

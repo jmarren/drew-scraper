@@ -1,0 +1,16 @@
+http://localhost:3014/
+GET 
+
+http://localhost:3014
+POST /stealth/scrape
+{
+  "urlLink": "https://www.apartmentfinder.com/Pennsylvania/Newtown-Square-Apartments/Madison-Ellis-Preserve-Apartments-fbjn3tr"
+}
+
+http://localhost:3014
+POST /testing
+{ 
+  "urlLink": "https://www.apartmentfinder.com/Pennsylvania/Newtown-Square-Apartments/Madison-Ellis-Preserve-Apartments-fbjn3tr"
+}
+
+

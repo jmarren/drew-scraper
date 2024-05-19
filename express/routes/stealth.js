@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/scrape", async (req, res) => {
+  console.log(req.body)
   const url = req.body.urlLink;
   console.log(url);
   try {
@@ -33,34 +34,43 @@ router.post("/scrape", async (req, res) => {
 
     const $ = cheerio.load(html);
 
-    const units = [];
 
-    $(".unitGridRow").each((i, el) => {
-      const unit = $(".unitLabel.unitColumn span.screenReaderOnly", el)
-        .text()
-        .trim();
-      const price = $(".unitLabel.pricingColumn span", el).text().trim();
-      const sqft = $(".unitLabel.sqftColumn span", el).text().trim();
-      const availability = $(
-        ".unitLabel.availableColumn span.dateAvailable",
-        el
-      )
-        .text()
-        .trim();
 
-      units.push({ unit, price, sqft, availability });
+    const property = $("h1").text().trim();
+
+
+    const flatData = []; // Define flatData array here
+
+    $(".pricingGridItem").each((_, el) => {
+      const modelName = $(el).find(".modelName").text().trim();
+      const detailsTextWrapper = $(el).find(".detailsTextWrapper span");
+      const beds = detailsTextWrapper.eq(0).text().trim();
+      const baths = detailsTextWrapper.eq(1).text().trim();
+      const sqFt = detailsTextWrapper.eq(2).text().trim();
+
+      $(el).find(".allUnits .unitGridContainer .unitGridRow").each((_, el) => {
+        const unit = $(el).find(".unitLabel.unitColumn span.screenReaderOnly").text().trim();
+        const price = $(el).find(".unitLabel.pricingColumn span").text().trim();
+        const availability = $(el).find(".unitLabel.availableColumn span.dateAvailable").text().trim();
+
+        flatData.push({ modelName, unit, beds, baths, sqFt, price, availability, property }); // Now flatData is defined
+      });
     });
 
-    console.log(units);
+
+    // fs.writeFileSync("floorPlans.json", JSON.stringify(flatData, null, 4), { flag: 'w' })
+
+
 
     const json2csvParser = new Parser();
-    const csv = json2csvParser.parse(units);
+    const csv = json2csvParser.parse(flatData);
 
-    // Write CSV to a file
-    fs.writeFileSync("units.csv", csv);
+    // Set the appropriate headers for a CSV response
+    res.setHeader('Content-Type', 'text/csv');
+    // res.setHeader('Content-Disposition', 'attachment; filename=\"' + `${property}.csv` + '\"');
 
-    // Send the file
-    res.download("units.csv");
+    // Send the CSV data
+    res.send(csv);
 
     await browser.close();
   } catch (error) {
