@@ -154,7 +154,8 @@ resource "aws_instance" "app_instance" {
     cd drew-scraper/nextjs
     npm install || { echo 'Failed to install npm packages for Next.js'; exit 1; }
     npm run build || { echo 'Failed to build Next.js app'; exit 1; }
-    nohup npm start > /dev/null 2>&1 &
+    echo "-------------- setting output to /var/log/nextjs-app -----------------"
+    nohup npm start > /var/log/nextjs-app.log 2>&1 &
     sleep 5  # Adjust timing as necessary
     if ! pgrep -f "npm start"; then
         echo 'Failed to start Next.js app'
@@ -162,7 +163,8 @@ resource "aws_instance" "app_instance" {
     fi
     cd ../express
     npm install || { echo 'Failed to install npm packages for Express'; exit 1; }
-    nohup npm start > /dev/null 2>&1 &
+    echo "-------------- setting output to /var/log/express-app -----------------"
+    nohup npm start > /var/log/express-app.log 2>&1 &
     sleep 5  # Adjust timing as necessary
     if ! pgrep -f "npm start"; then
         echo 'Failed to start Express app'
