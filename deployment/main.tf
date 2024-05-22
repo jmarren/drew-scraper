@@ -170,8 +170,10 @@ resource "aws_instance" "app_instance" {
         echo 'Failed to start Express app'
         exit 1
     fi
+    echo "-------------- Testing Nginx --------------"
     sudo nginx -t || { echo 'Failed to test Nginx configuration'; exit 1; }
-    sudo systemctl restart nginx
+    echo "-------------- Restarting Nginx --------------"
+    sudo systemctl restart nginx || { echo 'Failed to restart Nginx'; exit 1;}
   EOF
 }
 

@@ -7,7 +7,7 @@ export default function Home() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    fetch('http://localhost:3014/stealth/scrape', {
+    fetch('https://droopy.mechanicalturk.one/api/stealth/scrape', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
